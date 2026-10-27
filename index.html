@@ -110,8 +110,8 @@
 "items/top_candle.png":"a/top_candle.0e0bdf95.webp",
 "items/top_star.png":"a/top_star.88a87e78.webp",
 "items/top_strawberry.png":"a/top_strawberry.03b82cab.webp",
-"sfx/tap.m4a":"a/tap.e0adc270.m4a",
-"sfx/next.m4a":"a/next.7755a7c4.m4a",
+"sfx/tap.m4a":"a/tap.6119bb6c.m4a",
+"sfx/next.m4a":"a/next.d4faab69.m4a",
 "sfx/found.m4a":"a/found.1c63f683.m4a",
 "sfx/miss.m4a":"a/miss.572632e3.m4a",
 "sfx/rotate.m4a":"a/rotate.969d9f84.m4a",
@@ -288,12 +288,13 @@ function unlockAudio() {
   });
   if (bgmWant) { var w = bgmWant; bgmWant = null; playBgm(w); }
 }
+var SFX_VOL = 0.7; // 효과음 전체 볼륨 (배경음악과 별개)
 function playSfx(n, vol) {
   if (!AC || save.mute) return;
   var b = sfxBuf[n];
   if (!b) { if (SYNTH[n]) SYNTH[n](); return; }
   var s = AC.createBufferSource(), g = AC.createGain();
-  s.buffer = b; g.gain.value = vol || 1; s.connect(g); g.connect(master); s.start();
+  s.buffer = b; g.gain.value = (vol || 1) * SFX_VOL; s.connect(g); g.connect(master); s.start();
 }
 function playBgm(n) {
   if (!AC) { bgmWant = n; return; }
@@ -328,8 +329,8 @@ function tone(freq, dur, type, vol, delay) {
 }
 function musicNote(freq, vol, delay) { tone(freq, 1.0, 'sine', vol || 0.16, delay); tone(freq * 2, 0.5, 'sine', (vol || 0.16) * 0.3, delay); tone(freq * 3.01, 0.25, 'sine', (vol || 0.16) * 0.12, delay); }
 var SYNTH = {
-  tap: function () { tone(880, 0.08, 'triangle', 0.08); },
-  next: function () { tone(660, 0.06, 'sine', 0.06); },
+  tap: function () { tone(784, 0.1, 'sine', 0.05); },
+  next: function () { tone(523, 0.08, 'sine', 0.035); },
   found: function () { [784, 988, 1319].forEach(function (f, i) { tone(f, 0.25, 'triangle', 0.12, i * 0.07); }); },
   miss: function () { tone(220, 0.12, 'sine', 0.06); },
   rotate: function () { tone(1320, 0.1, 'sine', 0.06); },
