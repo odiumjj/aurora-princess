@@ -243,7 +243,7 @@ function drawFace(key, cx, cy, r, zoom, oy) {
 
 // ── 저장 ──
 var SAVE_KEY = 'aurora_save_v2';
-function freshSave() { return { scene: null, step: 0, shards: [], stars: 0, heart: 0, cleared: [], mute: false, ending: null, ribbons: [], met: [] }; }
+function freshSave() { return { scene: null, step: 0, shards: [], stars: 0, heart: 0, cleared: [], mute: false, ending: null, ribbons: [], met: [], quiz: false }; }
 var save = freshSave();
 function loadSave() {
   try { var s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.shards) { save = freshSave(); for (var k in s) save[k] = s[k]; } } catch (e) {}
@@ -638,7 +638,7 @@ var STORY = {
       { t: '"괜찮아요! 셋이 같이 찾으면 금방이에요."', heart: 1, reply: { who: 'kayra', face: 'smile', t: '…! 고마워, 오로라. 나도 같이 찾을게.' } },
       { t: '"루나, 보석은 무슨 색이야?"', heart: 0, reply: { who: 'luna', face: 'smile', t: '빨강, 파랑, 초록, 노랑, 보라! 반짝반짝해서 잘 보일 거야.' } }
     ] },
-    { who: 'luna', face: 'smile', t: '방 안을 잘 살펴보고 보석을 톡! 눌러 줘. 잘 안 보이면 나한테 힌트를 물어봐!' },
+    { who: 'luna', face: 'smile', qt: '보석이 수수께끼 상자 속에 숨어 버렸대! 문제를 맞히면 하나씩 나와. 모르면 내가 힌트 줄게!', t: '방 안을 잘 살펴보고 보석을 톡! 눌러 줘. 잘 안 보이면 나한테 힌트를 물어봐!' },
     { go: 'hidden' }
   ],
   prologue2: [
@@ -659,7 +659,7 @@ var STORY = {
     { bg: 'bg/village_night.png', bgm: 'cute' },
     { n: '마을의 불빛은 모두 꺼지고, 케이라는 어디에도 보이지 않았어요.' },
     { who: 'luna', face: 'worried', t: '어둠 속에선 아무것도 찾을 수 없어. 먼저 마을에 불을 밝혀야 해.' },
-    { who: 'luna', face: 'smile', t: '내 지팡이의 빛의 크리스탈로 빛줄기를 만들 수 있어. 거울을 톡톡 눌러서 돌리고, 빛을 등불까지 보내 줘!' },
+    { who: 'luna', face: 'smile', qt: '내 빛의 크리스탈은 정답을 맞힐 때마다 밝아져. 문제를 풀어서 등불을 다시 켜자!', t: '내 지팡이의 빛의 크리스탈로 빛줄기를 만들 수 있어. 거울을 톡톡 눌러서 돌리고, 빛을 등불까지 보내 줘!' },
     { go: 'light', level: 0 }
   ],
   ch1_end: [
@@ -682,8 +682,8 @@ var STORY = {
     { n: '마을 너머 \'속삭이는 숲\'.\n나무들 사이로 보랏빛 덩굴이 꿈틀거렸어요.' },
     { who: 'fairy', face: 'smile', t: '어머, 사람이다! 나는 숲의 요정 피피야. 도와줘! 내 친구 토토가 어둠 안개 속에서 길을 잃었어!' },
     { who: 'aurora', face: 'surprised', t: '어둠 안개?' },
-    { who: 'fairy', face: 'smile', t: '안개가 숲의 기억을 뒤죽박죽 섞어 버렸어. 똑같은 그림 카드를 짝지어 주면 안개가 걷힐 거야!' },
-    { who: 'luna', face: 'smile', t: '카드를 두 장씩 뒤집어서 같은 그림을 찾자. 어디에 뭐가 있었는지 잘 기억해야 해!' },
+    { who: 'fairy', face: 'smile', qt: '안개가 숲의 기억을 뒤죽박죽 섞어 버렸어. 숲의 퀴즈를 맞히면 안개가 걷힐 거야!', t: '안개가 숲의 기억을 뒤죽박죽 섞어 버렸어. 똑같은 그림 카드를 짝지어 주면 안개가 걷힐 거야!' },
+    { who: 'luna', face: 'smile', qt: '문제를 잘 읽고 정답을 톡! 틀려도 괜찮아, 내가 힌트를 줄게.', t: '카드를 두 장씩 뒤집어서 같은 그림을 찾자. 어디에 뭐가 있었는지 잘 기억해야 해!' },
     { go: 'cards' }
   ],
   ch2_mid: [
@@ -692,8 +692,8 @@ var STORY = {
     { who: 'rabbit', face: 'smile', t: '아참, 검은 왕관을 쓴 언니가 숲 깊은 곳으로 지나갔어요. 슬픈 얼굴이었어요.' },
     { who: 'aurora', face: 'surprised', t: '케이라 언니야!' },
     { who: 'fairy', face: 'smile', t: '그런데 그 길은 어둠 슬라임들이 막고 있어. 고양이 나비도 그 안에 갇혔고!' },
-    { who: 'luna', face: 'smile', t: '슬라임을 빛의 꽃 위로 밀어 주면 어둠이 정화될 거야. 오로라, 부탁해!' },
-    { n: '화면의 화살표 버튼이나 밀고 싶은 방향을 눌러 오로라를 움직여요.\n슬라임은 밀 수만 있고 당길 수는 없어요. 막히면 \'되돌리기\'!' },
+    { who: 'luna', face: 'smile', qt: '슬라임들은 정답을 들으면 어둠이 풀린대. 오로라, 부탁해!', t: '슬라임을 빛의 꽃 위로 밀어 주면 어둠이 정화될 거야. 오로라, 부탁해!' },
+    { howto: 1, n: '화면의 화살표 버튼이나 밀고 싶은 방향을 눌러 오로라를 움직여요.\n슬라임은 밀 수만 있고 당길 수는 없어요. 막히면 \'되돌리기\'!' },
     { go: 'push', level: 0 }
   ],
   ch2_end: [
@@ -711,15 +711,15 @@ var STORY = {
     { bg: 'bg/spring.png', bgm: 'cute' },
     { n: '숲의 끝, 별빛이 고요히 내려앉은 \'별의 샘\'.' },
     { who: 'luna', face: 'smile', t: '여기… 어릴 때 언니랑 자주 왔던 곳이야. 같이 별을 세곤 했어.' },
-    { who: 'fairy', face: 'smile', t: '봐! 하늘의 별자리가 흩어져 있어. 그림을 보고 별과 별을 이어서 별자리를 되살려 줘!' },
-    { who: 'luna', face: 'smile', t: '별 하나를 누르고, 이어질 다른 별을 누르면 선이 생겨. 잘못 이었으면 같은 두 별을 다시 누르면 지워져!' },
+    { who: 'fairy', face: 'smile', qt: '봐! 하늘의 별자리가 흩어져 있어. 별님 퀴즈를 맞히면 별자리가 되살아나!', t: '봐! 하늘의 별자리가 흩어져 있어. 그림을 보고 별과 별을 이어서 별자리를 되살려 줘!' },
+    { who: 'luna', face: 'smile', howto: 1, t: '별 하나를 누르고, 이어질 다른 별을 누르면 선이 생겨. 잘못 이었으면 같은 두 별을 다시 누르면 지워져!' },
     { go: 'stars', level: 0 }
   ],
   ch3_mid: [
     { bg: 'bg/spring.png', bgm: 'cute' },
     { n: '별자리 세 개가 완성되자, 샘물이 무지갯빛으로 반짝이기 시작했어요.' },
     { who: 'fairy', face: 'smile', t: '이제 마지막이야! 별들이 들려주는 변신의 노래를 따라 불러야 해.' },
-    { who: 'luna', face: 'smile', t: '동그라미가 줄어들어서 별에 딱 겹칠 때 톡! 누르면 돼. 오로라가 노래를 연주하는 거야!' },
+    { who: 'luna', face: 'smile', qt: '변신의 노래는 퀴즈로 되어 있대. 정답을 다 맞히면 노래가 완성돼!', t: '동그라미가 줄어들어서 별에 딱 겹칠 때 톡! 누르면 돼. 오로라가 노래를 연주하는 거야!' },
     { go: 'rhythm' }
   ],
   ch3_end: [
@@ -736,8 +736,8 @@ var STORY = {
     { bg: 'bg/flight_sky.png', bgm: 'adventure' },
     { n: '무지개 요정이 된 오로라는 루나를 안고 밤하늘로 날아올랐어요.' },
     { who: 'luna', face: 'worried', t: '저기 봐! 어둠 박쥐 떼가 몰려와!' },
-    { who: 'aurora', face: 'fairy', t: '꽉 잡아, 루나! 박쥐를 피해서 날아갈게!' },
-    { n: '화면을 누른 채 위아래로 움직이면 오로라가 따라 날아요.\n박쥐를 피하고 별을 모아요!' },
+    { who: 'aurora', face: 'fairy', qt: '꽉 잡아, 루나! 박쥐들이 길을 막고 퀴즈를 낸대. 맞히면 비켜 줄 거야!', t: '꽉 잡아, 루나! 박쥐를 피해서 날아갈게!' },
+    { howto: 1, n: '화면을 누른 채 위아래로 움직이면 오로라가 따라 날아요.\n박쥐를 피하고 별을 모아요!' },
     { go: 'flight' }
   ],
   ch4_mid: [
@@ -745,8 +745,8 @@ var STORY = {
     { n: '어둠의 성 안. 깨진 스테인드글라스 사이로 차가운 바람이 불었어요.' },
     { who: 'shadow', face: 'smile', t: '흐흐흐… 여기까지 오다니. 케이라는 이제 내 거야. 아무도 그 아이를 보지 않았잖아?' },
     { who: 'aurora', face: 'fairy', t: '아니야! 우리가 언니를 보러 왔어!' },
-    { who: 'shadow', face: 'smile', t: '그럼 내 수수께끼와 빛의 순서를 맞혀 봐. 틀리면… 영원히 어둠 속이야, 흐흐.' },
-    { who: 'luna', face: 'smile', t: '오로라, 그림자가 보석을 빛내는 순서를 잘 보고 똑같이 눌러! 수수께끼는 내가 같이 생각할게.' },
+    { who: 'shadow', face: 'smile', qt: '그럼 내 퀴즈를 맞혀 봐. 틀리면… 영원히 어둠 속이야, 흐흐.', t: '그럼 내 수수께끼와 빛의 순서를 맞혀 봐. 틀리면… 영원히 어둠 속이야, 흐흐.' },
+    { who: 'luna', face: 'smile', qt: '걱정 마, 오로라! 어려운 문제는 내가 힌트를 줄게.', t: '오로라, 그림자가 보석을 빛내는 순서를 잘 보고 똑같이 눌러! 수수께끼는 내가 같이 생각할게.' },
     { go: 'boss' }
   ],
   ch4_end: [
@@ -839,7 +839,7 @@ var STORY = {
     { who: 'aurora', face: 'surprised', t: '응! 어떻게 알았어?' },
     { who: 'nancy', face: 'smile', t: '빨간 리본이 날아와서 우리 오븐 굴뚝에 걸렸거든. 그런데 축제 케이크 주문이 밀려서 꺼낼 틈이 없어!' },
     { who: 'luna', face: 'smile', t: '우리가 케이크 만드는 걸 도와줄게!' },
-    { who: 'nancy', face: 'smile', t: '정말? 주문서 그림이랑 똑같이 아래층부터 쌓고, 마지막에 장식을 올려 줘. 맛있는 건 나눠야 더 맛있지!' },
+    { who: 'nancy', face: 'smile', qt: '정말? 케이크 퀴즈를 맞힐 때마다 한 층씩 완성돼. 맛있는 건 나눠야 더 맛있지!', t: '정말? 주문서 그림이랑 똑같이 아래층부터 쌓고, 마지막에 장식을 올려 줘. 맛있는 건 나눠야 더 맛있지!' },
     { go: 'cake' }
   ],
   ch5_mid: [
@@ -848,8 +848,8 @@ var STORY = {
     { ribbon: 'red' },
     { who: 'barbie', face: 'smile', t: '어머, 너희가 리본 찾는 아이들? 나는 재봉사 바비! 반짝반짝, 완벽한 옷은 다 내 손에서 나오지.' },
     { who: 'barbie', face: 'smile', t: '주황 리본이 내 재봉실 창문으로 날아들었는데… 그 바람에 축제 드레스 단추 다섯 개가 다 굴러가 버렸어!' },
-    { who: 'kayra', face: 'smile', t: '단추라면 우리가 찾아볼게. 숨은 물건 찾기는 오로라가 잘하거든.' },
-    { who: 'barbie', face: 'smile', t: '분홍 하트 단추야. 다 찾으면 리본이랑 바꿔 줄게!' },
+    { who: 'kayra', face: 'smile', qt: '단추라면 우리가 찾아볼게. 퀴즈라면 오로라가 잘하거든.', t: '단추라면 우리가 찾아볼게. 숨은 물건 찾기는 오로라가 잘하거든.' },
+    { who: 'barbie', face: 'smile', qt: '분홍 하트 단추야. 내 퀴즈를 맞히면 단추가 하나씩 나타나게 해 줄게!', t: '분홍 하트 단추야. 다 찾으면 리본이랑 바꿔 줄게!' },
     { go: 'hidden5' }
   ],
   ch5_end: [
@@ -869,7 +869,7 @@ var STORY = {
     { who: 'daram', face: 'smile', t: '재크, 자랑은 그만하고 도토리 좀 같이 옮겨 줘, 다람!' },
     { who: 'daram', face: 'smile', t: '보라색 연기가 휙 지나가더니 겨울 도토리가 데굴데굴 다 흩어졌어. 노란 리본도 그 사이에 끼어 있는데, 다람!' },
     { who: 'aurora', face: 'smile', t: '우리가 도토리를 둥지에 넣어 줄게!' },
-    { who: 'daram', face: 'smile', t: '도토리는 밀 수만 있고 당길 수는 없어. 막히면 되돌리기, 다람!' },
+    { who: 'daram', face: 'smile', qt: '도토리 퀴즈를 맞히면 도토리가 둥지로 데굴데굴 굴러가, 다람!', t: '도토리는 밀 수만 있고 당길 수는 없어. 막히면 되돌리기, 다람!' },
     { go: 'push6', level: 0 }
   ],
   ch6_mid: [
@@ -880,7 +880,7 @@ var STORY = {
     { who: 'airi', face: 'smile', t: '그럴 땐 내 차례지! 나는 바람의 소녀 에이리. 바람이 부는 쪽으로 가 보자!' },
     { who: 'airi', face: 'smile', t: '오로라, 요정 날개 있지? 내 연이랑 같이 바람을 타자. 먹구름만 조심해!' },
     { who: 'aurora', face: 'fairy', t: '좋아, 날아오르자!' },
-    { n: '화면을 누른 채 위아래로 움직여요.\n먹구름을 피하고 별을 모아요!' },
+    { howto: 1, n: '화면을 누른 채 위아래로 움직여요.\n먹구름을 피하고 별을 모아요!' },
     { go: 'flight6' }
   ],
   ch6_end: [
@@ -900,8 +900,8 @@ var STORY = {
     { who: 'yokois', face: 'smile', t: '…봤어요. 꽁꽁 언 호수 건너편에 떨어졌어요. 그런데 얼음이 미끄러워서, 한 번 미끄러지면 부딪힐 때까지 안 멈춰요.' },
     { who: 'kayra', face: 'smile', t: '요코이스… 혼자 있는 게 익숙해 보여. 나도 예전엔 그랬어.' },
     { who: 'yokois', face: 'smile', t: '…다들 제가 차갑대요. 그래서 아무도 같이 놀자고 안 해요.' },
-    { who: 'aurora', face: 'smile', t: '그럼 지금 같이 놀자! 호수 퍼즐, 같이 풀자!' },
-    { n: '방향을 누르면 오로라가 쭉 미끄러져요.\n눈사람이나 얼음벽에 부딪히면 멈추고, 눈더미에 들어가도 멈춰요.\n리본 위에 딱 멈추면 성공!' },
+    { who: 'aurora', face: 'smile', qt: '그럼 지금 같이 놀자! 눈꽃 퀴즈, 같이 풀자!', t: '그럼 지금 같이 놀자! 호수 퍼즐, 같이 풀자!' },
+    { howto: 1, n: '방향을 누르면 오로라가 쭉 미끄러져요.\n눈사람이나 얼음벽에 부딪히면 멈추고, 눈더미에 들어가도 멈춰요.\n리본 위에 딱 멈추면 성공!' },
     { go: 'ice', level: 0 }
   ],
   ch7_end: [
@@ -924,7 +924,7 @@ var STORY = {
     { who: 'violet', face: 'smile', t: '어릴 때 둘이서 제비꽃 화관 만들던 거 기억나? 네가 어둠의 성에 있다는 소문 듣고… 계속 걱정했어.' },
     { who: 'kayra', face: 'smile', t: '…미안해. 이제 괜찮아. 오로라랑 루나 덕분이야.' },
     { who: 'violet', face: 'smile', t: '보라색도 예쁜 빛이야. 자, 같이 등불을 켜 보자!' },
-    { who: 'luna', face: 'smile', t: '마을에서처럼 거울을 돌려서 빛을 보내면 돼!' },
+    { who: 'luna', face: 'smile', qt: '마을에서처럼 퀴즈를 맞혀서 등불을 켜자!', t: '마을에서처럼 거울을 돌려서 빛을 보내면 돼!' },
     { go: 'light8', level: 0 }
   ],
   ch8_end: [
@@ -945,9 +945,9 @@ var STORY = {
     { who: 'maria', face: 'smile', t: '어서 오세요. 저는 오늘 음악회에서 노래할 마리아예요.' },
     { n: '무대 꼭대기, 마지막 빈자리 위에\n쿠로가 보라 리본을 꼭 끌어안고 앉아 있었어요.' },
     { who: 'kuro', face: 'smile', t: '오지 마! 이건 안 줄 거야!' },
-    { who: 'maria', face: 'smile', t: '노래는 마음을 잇는 다리예요. 쿠로에게 우리 노래를 들려줘요. 오로라, 반주를 맞춰 줄래요?' },
+    { who: 'maria', face: 'smile', qt: '노래는 마음을 잇는 다리예요. 노래 퀴즈를 맞히면 우리 노래가 쿠로에게 닿을 거예요.', t: '노래는 마음을 잇는 다리예요. 쿠로에게 우리 노래를 들려줘요. 오로라, 반주를 맞춰 줄래요?' },
     { who: 'kayra', face: 'smile', t: '나도 부를게. 이번엔… 무대 뒤가 아니라 무대 위에서.' },
-    { n: '동그라미가 별에 딱 겹칠 때 톡!\n모두의 노래를 쿠로에게 들려줘요.' },
+    { howto: 1, n: '동그라미가 별에 딱 겹칠 때 톡!\n모두의 노래를 쿠로에게 들려줘요.' },
     { go: 'rhythm9' }
   ],
   ch9_end: [
@@ -1023,6 +1023,12 @@ var MAKERS = {
   card: function (c) { return ChapterCardScene(c.ch); },
   ending: function (c) { return EndingScene(c.kind); }
 };
+// 퀴즈 모드면 미니게임 대신 퀴즈 (level = 이어할 문제 번호)
+['hidden', 'light', 'cards', 'push', 'stars', 'rhythm', 'flight', 'boss', 'cake', 'hidden5', 'push6', 'flight6', 'ice', 'light8', 'rhythm9'].forEach(function (k) {
+  var orig = MAKERS[k];
+  // 퀴즈 진행은 save.qstep에 따로 저장 (퍼즐 단계 번호와 섞이면 모드를 바꿨을 때 없는 단계로 갈 수 있음)
+  MAKERS[k] = function (c) { return save.quiz ? QuizScene(k, save.scene === k ? save.qstep || 0 : 0) : orig(c); };
+});
 function runGo(c) { go(function () { return MAKERS[c.go](c); }); }
 function finishGame(kind) { clearChapter(CLEAR_OF[kind]); startStory(FLOW[kind]); }
 function startStory(key, step) { go(function () { return StoryScene(key, step); }); }
@@ -1047,7 +1053,9 @@ function StoryScene(key, startStep) {
       if (c.ifShard) { queue = (hasShard(c.ifShard) ? c.yes : c.no).concat(queue); continue; }
       if (c.ribbon) { if (stepIdx > skipTo) getRibbon(c.ribbon); continue; }
       if (c.go) { runGo(c); return; }
+      if (save.quiz && c.howto) continue; // 퀴즈 모드: 퍼즐 조작 설명은 건너뜀
       if (stepIdx <= skipTo && !c.choice) continue;
+      if (save.quiz && c.qt) c = { who: c.who, face: c.face, t: c.qt };
       cur = c; shown = 0; typing = true;
       if (c.who) meet(c.who);
       save.step = stepIdx; writeSave();
@@ -1131,11 +1139,21 @@ function TitleScene() {
   var hasSave = !!save.scene;
   var btns = [];
   var bx = SX + 520, part2 = save.cleared.indexOf('final') >= 0;
-  btns.push(Button(hasSave ? '처음부터' : '시작하기', part2 ? bx - 230 : bx, 640, 400, 100, function () {
+  var choosing = false;
+  function startNew(quiz) {
     var keep = { mute: save.mute, cleared: save.cleared, ending: save.ending, ribbons: save.ribbons, met: save.met };
-    save = freshSave(); for (var k in keep) save[k] = keep[k]; writeSave();
+    save = freshSave(); for (var k in keep) save[k] = keep[k]; save.quiz = quiz; writeSave();
     startStory('prologue');
-  }));
+  }
+  var modeBtns = [
+    Button('❓ 퀴즈 모드', SX + 250, 430, 440, 130, function () { startNew(true); }, '#ff8fc4'),
+    Button('🧩 퍼즐 모드', SX + 750, 430, 440, 130, function () { startNew(false); }, '#8fb8ff'),
+    Button('뒤로', SX + 620, 800, 200, 80, function () { choosing = false; }, '#c9a0b8')
+  ];
+  var modeChip = Button('', SX + 1090, 30, 320, 76, function () { save.quiz = !save.quiz; writeSave(); chipLabel(); }, '#b59cff');
+  function chipLabel() { modeChip.label = (save.quiz ? '❓ 퀴즈 모드' : '🧩 퍼즐 모드') + ' ⇄'; modeChip.color = save.quiz ? '#ff8fc4' : '#8fb8ff'; }
+  chipLabel();
+  btns.push(Button(hasSave ? '처음부터' : '시작하기', part2 ? bx - 230 : bx, 640, 400, 100, function () { choosing = true; }));
   if (part2) btns.push(Button('2부 · 무지개 축제', bx + 250, 640, 400, 100, function () { startStory('p2_intro'); }, '#ff9a3c'));
   if (hasSave) btns.push(Button('이어하기', bx, 760, 400, 100, continueGame, '#8fb8ff'));
   if (save.cleared.length) btns.push(Button('장 선택', bx - 230, 880, 400, 90, function () { go(ChapterSelectScene); }, '#b59cff'));
@@ -1147,12 +1165,26 @@ function TitleScene() {
       outlined('오로라공주', W / 2, 230 + bob, 150, '#fff', '#ff6fae', 22);
       outlined('빛과 어둠의 자매', W / 2, 385 + bob, 64, '#fff7c2', '#8b5cc4', 14);
       for (var i = 0; i < 6; i++) drawStar(SX + 300 + i * 170, 500 + Math.sin(T * 2 + i) * 14, 16 + (i % 2) * 8, ['#ffe066', '#ff8fc4', '#8fd3ff'][i % 3], T + i);
+      if (choosing) {
+        ctx.fillStyle = 'rgba(40,20,60,0.55)'; ctx.fillRect(0, 0, W, H);
+        panel(SX + 190, 250, 1060, 680, 'rgba(255,250,244,0.97)', '#ff8fc4');
+        outlined('어떻게 놀까?', W / 2, 340, 64, '#fff', '#c45a9a', 14);
+        modeBtns.forEach(drawButton);
+        text('문제를 풀면서 이야기가 진행돼요.', SX + 470, 610, 30, '#5a4560', 'center', 700);
+        text('틀리면 루나가 힌트를 줘요!', SX + 470, 655, 30, '#5a4560', 'center', 700);
+        text('숨은그림찾기·빛 퍼즐·리듬 등', SX + 970, 610, 30, '#5a4560', 'center', 700);
+        text('미니게임으로 진행해요.', SX + 970, 655, 30, '#5a4560', 'center', 700);
+        text('모드는 타이틀 오른쪽 위에서 언제든 바꿀 수 있어요', W / 2, 740, 26, '#9a8aa8', 'center', 600);
+        return;
+      }
       btns.forEach(drawButton);
+      drawButton(modeChip);
       if (save.shards.length) text('추억 조각 ' + save.shards.length + ' / 8' + (save.ribbons.length ? '   무지개 리본 ' + save.ribbons.length + ' / 7' : ''), SX + 1400, 1040, 30, '#fff', 'right', 700);
       dirty = true;
     },
-    tap: function (x, y) { tapButtons(btns, x, y); },
-    key: function (k) { if (k === 'Enter') btns[hasSave ? 1 : 0].onTap(); }
+    tap: function (x, y) { if (choosing) { tapButtons(modeBtns, x, y); return; } if (!tapButtons([modeChip], x, y)) tapButtons(btns, x, y); },
+    key: function (k) { if (k === 'Enter') { if (choosing) modeBtns[0].onTap(); else btns[hasSave ? 1 : 0].onTap(); } },
+    dbg: function () { return { title: true, choosing: choosing, modeBtns: modeBtns, modeChip: modeChip }; }
   };
 }
 function continueGame() {
@@ -2637,6 +2669,210 @@ function EndingScene(kind) {
 // ─────────────────────────────────────────────
 // 메인 루프 (변화 없으면 그리지 않음 → 배터리 절약)
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// 퀴즈 모드: 미니게임 자리마다 4문제 (이야기·수수께끼·상식·수학국어 한 문제씩)
+// 틀리면 고른 답에 ✗ → 루나 힌트 1 → 힌트 2 → 오답이 하나씩 지워짐 → 결국 꼭 풀 수 있음
+// ─────────────────────────────────────────────
+var QUIZ_CAT = { story: ['📖 이야기', '#ff8fc4'], riddle: ['🤔 수수께끼', '#a98bf0'], know: ['🌍 상식', '#4fa9e0'], study: ['✏️ 수학·국어', '#5fbf6f'] };
+var QUIZ_SHARD = { hidden: 'm1', light: 'm2', cards: 'm3', push: 'm4', stars: 'm5', rhythm: 'm6', flight: 'm7', boss: 'm8' };
+function Q(cat, q, a, h1, h2) { return { cat: cat, q: q, a: a, h: [h1, h2] }; } // a[0]이 정답 (화면에선 섞어서 보여 줌)
+var QUIZ_SETS = {
+  hidden: { title: '루나의 보석 퀴즈', who: 'luna', bg: 'bg/castle_hall.png', bgm: 'polka', got: '보석', qs: [
+    Q('story', '오늘 빛의 왕국에서 열리는 축제의 이름은 무엇일까?', ['별빛 축제', '눈꽃 축제', '사과 축제', '불꽃 축제'], '하늘에서 반짝이는 것과 관련 있어!', '밤하늘에 반짝반짝, ○빛 축제!'),
+    Q('riddle', '세상에서 가장 뜨거운 바다는?', ['열바다', '동해', '홍해', '남극해'], '말장난 문제야! 뜨거울 때 나는 건 "열"이지?', '열 + 바다 = ?'),
+    Q('know', '무지개는 모두 몇 가지 색일까?', ['7가지', '5가지', '6가지', '8가지'], '빨주노초파남보!', '빨·주·노·초·파·남·보, 손가락으로 세어 봐.'),
+    Q('study', '왕관 보석 5개 중 2개를 찾았어.\n아직 못 찾은 보석은 몇 개일까?', ['3개', '2개', '4개', '5개'], '5에서 2를 빼 봐.', '손가락 다섯 개 중에 두 개를 접으면?')
+  ] },
+  light: { title: '어둠의 마을 퀴즈', who: 'luna', bg: 'bg/village_night.png', bgm: 'cute', got: '등불', qs: [
+    Q('story', '축제날 밤, 하늘에서 내려와 마을 등불을 끈 것은?', ['보랏빛 어둠', '하얀 눈', '빨간 불꽃', '무지개'], '어둠과 관련 있어. 색깔은 보라!', '보랏빛 ○○이 소용돌이쳤지.'),
+    Q('riddle', '불을 켜면 도망가고, 불을 끄면 돌아오는 것은?', ['어둠', '햇빛', '등불', '무지개'], '지금 마을을 덮고 있는 거야!', '빛의 반대말!'),
+    Q('know', '아침에 해가 떠오르는 쪽은 어디일까?', ['동쪽', '서쪽', '남쪽', '북쪽'], '해는 저녁에 서쪽으로 져.', '해가 지는 서쪽의 반대쪽!'),
+    Q('study', '등불이 한 줄에 3개씩, 4줄 있어.\n등불은 모두 몇 개일까?', ['12개', '7개', '10개', '15개'], '3을 네 번 더해 봐: 3+3+3+3', '3 × 4 = ?')
+  ] },
+  cards: { title: '피피의 숲 퀴즈', who: 'fairy', bg: 'bg/forest.png', bgm: 'adventure', got: '안개', qs: [
+    Q('story', '오로라에게 도와 달라고 한 숲의 요정 이름은?', ['피피', '토토', '나비', '루루'], '토토는 토끼, 나비는 고양이야.', '같은 글자가 두 번! ○○'),
+    Q('riddle', '왕이 넘어지면?', ['킹콩', '왕눈이', '꽈당왕', '왕자'], '영어로 왕은 "킹"이야!', '넘어질 때 나는 소리 "콩!" 킹 + 콩 = ?'),
+    Q('know', '토끼가 좋아하는 주황색 채소는?', ['당근', '양파', '고추', '마늘'], '주황색이고 길쭉해.', '눈에 좋다는 주황 채소, 당○!'),
+    Q('study', '"안개가 걷혔다"에서 "걷혔다"와 뜻이 비슷한 말은?', ['사라졌다', '생겼다', '몰려왔다', '짙어졌다'], '안개가 걷히면 앞이 잘 보여!', '없어졌다는 뜻이야.')
+  ] },
+  push: { title: '슬라임 숲 퀴즈', who: 'fairy', bg: 'bg/forest.png', bgm: 'adventure', got: '슬라임', qs: [
+    Q('story', '안개 속에서 길을 잃었던 토끼의 이름은?', ['토토', '피피', '나비', '쿠로'], '"저는 ○○예요!" 하고 인사했지.', '토끼의 "토"! 토○'),
+    Q('riddle', '먹으면 먹을수록 많아지는 것은?', ['나이', '사과', '과자', '밥'], '말장난이야! 생일마다 하나씩 먹는 것.', '"나는 ○○를 한 살 더 먹었어!"'),
+    Q('know', '고양이가 기분 좋을 때 목에서 내는 소리는?', ['그르릉', '꽥꽥', '음매', '꼬끼오'], '꽥꽥은 오리, 음매는 소, 꼬끼오는 닭!', '부드럽게 그르○ 하고 울려.'),
+    Q('study', '슬라임 4마리가 꽃 위에 있었는데 2마리가 더 올라왔어.\n모두 몇 마리일까?', ['6마리', '5마리', '7마리', '8마리'], '4 + 2 = ?', '4에서 두 개 더 세어 봐: 5, 6!')
+  ] },
+  stars: { title: '별의 샘 퀴즈', who: 'fairy', bg: 'bg/spring.png', bgm: 'cute', got: '별자리', qs: [
+    Q('story', '별의 샘은 루나가 어릴 때 누구랑 자주 왔던 곳일까?', ['케이라 언니', '오로라', '피피', '토토'], '루나에게는 언니가 있지!', '"언니랑 같이 별을 세곤 했어."'),
+    Q('riddle', '세상에서 가장 빠른 닭은?', ['후다닥', '꼬꼬닭', '치킨', '통닭'], '"닭"으로 끝나는 빠른 소리가 있어!', '아주 빨리 뛰어갈 때 "후다○!"'),
+    Q('know', '북두칠성은 별 몇 개로 되어 있을까?', ['7개', '5개', '6개', '9개'], '이름 속에 숫자가 숨어 있어.', '북두"칠"성! 칠은 몇?'),
+    Q('study', '별자리 3개를 되살려야 해. 하나에 별이 5개씩이면\n별은 모두 몇 개일까?', ['15개', '8개', '10개', '20개'], '5 + 5 + 5', '5 × 3 = ?')
+  ] },
+  rhythm: { title: '변신의 노래 퀴즈', who: 'luna', bg: 'bg/spring.png', bgm: 'waltz', got: '노래', qs: [
+    Q('story', '피피가 말한 별의 샘 이야기: 무엇을 완성하면 무지개 요정의 힘이 깨어날까?', ['별자리', '케이크', '눈사람', '왕관'], '하늘의 별과 별을 이어서 만드는 그림!', '별○○'),
+    Q('riddle', '개 중에서 가장 아름다운 개는?', ['무지개', '진돗개', '날개', '베개'], '오로라 머리 색깔을 떠올려 봐!', '빨주노초파남보 일곱 빛깔 무지○!'),
+    Q('know', '줄을 활로 켜서 소리를 내는 악기는?', ['바이올린', '북', '트라이앵글', '탬버린'], '줄이 있는 악기야!', '바이○○'),
+    Q('study', '"변신"의 뜻으로 알맞은 것은?', ['모습이 바뀜', '잠을 잠', '길을 잃음', '노래를 부름'], '오로라가 무지개 요정이 되는 것처럼!', '변(바뀔 변) + 신(몸 신)')
+  ] },
+  flight: { title: '밤하늘 퀴즈', who: 'luna', bg: 'bg/flight_sky.png', bgm: 'adventure', got: '박쥐', qs: [
+    Q('story', '별의 샘에서 오로라는 무엇으로 변신했을까?', ['무지개 요정', '인어 공주', '눈의 여왕', '꼬마 기사'], '날개와 별 지팡이가 생겼지!', '무지개 ○○'),
+    Q('riddle', '날개가 없는데도 하늘에 둥둥 떠다니는 것은?', ['구름', '참새', '나비', '박쥐'], '참새·나비·박쥐는 모두 날개가 있어!', '하늘에 둥실둥실, 하얗고 폭신한 것!'),
+    Q('know', '박쥐는 어떤 동물일까?', ['새끼를 낳는 포유류', '알을 낳는 새', '곤충', '물고기'], '박쥐는 새처럼 날지만 새가 아니야!', '강아지처럼 엄마 젖을 먹고 자라.'),
+    Q('study', '어둠의 성까지 60분 걸려. 30분 날았으면\n남은 시간은?', ['30분', '10분', '20분', '40분'], '60 - 30 = ?', '60분의 딱 절반!')
+  ] },
+  boss: { title: '그림자의 퀴즈', who: 'shadow', bg: 'bg/castle_dark.png', bgm: 'waltz', got: '빛', qs: [
+    Q('story', '루나의 언니 이름은?', ['케이라', '피피', '바비', '마리아'], '왕관을 닦다가 보석을 떨어뜨렸던 언니!', '케○○'),
+    Q('riddle', '빛이 있어야 생기고, 나를 졸졸 따라다니는 까만 것은?', ['그림자', '거울', '바람', '별'], '지금 우리 앞에 있는 녀석 이름이야!', '해를 등지면 발밑에 생기지.'),
+    Q('know', '달은 스스로 빛을 내지 않아.\n그런데 밤에 밝게 보이는 까닭은?', ['햇빛을 받아 비춰서', '달에 불이 있어서', '달에 전구가 있어서', '별이 붙어 있어서'], '달은 거울처럼 다른 빛을 받아 비춰.', '낮에 하늘에서 가장 밝은 것, 해!'),
+    Q('study', '박쥐 12마리를 3명이 똑같이 나누어 쫓아내면\n한 명이 몇 마리씩일까?', ['4마리', '3마리', '6마리', '9마리'], '12를 똑같이 세 묶음으로 나눠 봐.', '3 × 4 = 12!')
+  ] },
+  cake: { title: '넨시의 빵집 퀴즈', who: 'nancy', bg: 'bg/bakery_street.png', bgm: 'polka', got: '케이크', qs: [
+    Q('story', '빨간 리본은 빵집 어디에 걸렸을까?', ['오븐 굴뚝', '나무 위', '우물 속', '창문 커튼'], '빵을 굽는 곳이야!', '오븐 ○○'),
+    Q('riddle', '세상에서 가장 큰 코는?', ['멕시코', '코끼리', '콧구멍', '딸기코'], '나라 이름이야!', '멕시○'),
+    Q('know', '빵 반죽을 폭신하게 부풀게 하는 것은?', ['효모(이스트)', '소금', '물', '얼음'], '아주 작은 생물이 반죽 속에서 숨을 쉬어!', '영어로는 이스○!'),
+    Q('study', '케이크 1개를 8조각으로 잘라 4명이 똑같이 나누면\n한 명이 몇 조각씩일까?', ['2조각', '1조각', '3조각', '4조각'], '8 ÷ 4 = ?', '두 조각씩 주면 딱 맞을까?')
+  ] },
+  hidden5: { title: '바비의 재봉실 퀴즈', who: 'barbie', bg: 'bg/sewing_room.png', bgm: 'polka', got: '단추', qs: [
+    Q('story', '재봉사 바비의 입버릇은?', ['반짝반짝, 완벽해!', '기사 로이, 출동!', '~다람!', '등불 하나에 소원 하나!'], '바비는 반짝이는 걸 좋아해.', '반짝반짝, ○○해!'),
+    Q('riddle', '세상에서 가장 착한 사자는?', ['자원봉사자', '아기 사자', '숫사자', '흰 사자'], '"사자"로 끝나는 사람이야!', '남을 돕는 착한 사람, 자원봉○자'),
+    Q('know', '무지개 색 순서에서 빨강 바로 다음 색은?', ['주황', '노랑', '파랑', '보라'], '빨주노초파남보!', '빨 다음은 "주"!'),
+    Q('study', '속담: "바늘 가는 데 ○ 간다"\n○에 들어갈 말은?', ['실', '천', '단추', '가위'], '바늘구멍에 꿰는 것!', '바늘이랑 늘 같이 다니는 가느다란 것.')
+  ] },
+  push6: { title: '다람의 도토리 퀴즈', who: 'daram', bg: 'bg/bean_hill.png', bgm: 'adventure', got: '도토리', qs: [
+    Q('story', '하늘까지 닿는 콩나무를 심은 소년은?', ['재크', '로이', '치하오', '다람'], '"내 콩나무는 하늘까지 닿는다고!"', '밀짚모자를 쓴 장난꾸러기!'),
+    Q('riddle', '도둑이 가장 좋아하는 아이스크림은?', ['보석바', '바닐라', '초코콘', '딸기맛'], '훔치고 싶은 반짝이는 것 + 바!', '왕관에 박혀 있던 것, ○○바'),
+    Q('know', '다람쥐가 겨울을 나려고 모아 두는 열매는?', ['도토리', '사과', '바나나', '포도'], '다람이 모자도 이 모양이야!', '참나무 열매, 도○리'),
+    Q('study', '도토리 20개를 하루에 4개씩 먹으면\n며칠 동안 먹을 수 있을까?', ['5일', '4일', '6일', '8일'], '4씩 세어 봐: 4, 8, 12…', '20 ÷ 4 = ?')
+  ] },
+  flight6: { title: '에이리의 바람 퀴즈', who: 'airi', bg: 'bg/wind_sky.png', bgm: 'adventure', got: '바람', qs: [
+    Q('story', '바람의 소녀 에이리가 타고 하늘을 누비는 것은?', ['연', '빗자루', '용', '풍선'], '줄을 잡고 하늘에 띄우는 거야!', '무지개 ○'),
+    Q('riddle', '딸기가 회사에서 잘리면?', ['딸기시럽', '딸기잼', '딸기우유', '딸기케이크'], '일자리를 잃는 걸 "실업"이라고 해.', '딸기 + 실업 = 딸기 ○럽!'),
+    Q('know', '비가 오기 전에 하늘을 덮는 어두운 구름은?', ['먹구름', '솜사탕 구름', '무지개 구름', '별 구름'], '먹물처럼 까만 구름!', '먹○○'),
+    Q('study', '소리나 모양을 흉내 내는 말이 아닌 것은?', ['바람', '쌩쌩', '살랑살랑', '휘잉'], '쌩쌩·살랑살랑·휘잉은 바람 소리를 따라 한 말이야.', '흉내 내는 말이 아닌, 그냥 이름인 것은?')
+  ] },
+  ice: { title: '요코이스의 눈꽃 퀴즈', who: 'yokois', bg: 'bg/snow_kingdom.png', bgm: 'waltz', got: '얼음', qs: [
+    Q('story', '눈꽃 왕국의 공주 이름은?', ['요코이스', '바이올렛', '마리아', '넨시'], '은백색 머리에 눈꽃 티아라!', '요○○스'),
+    Q('riddle', '추울수록 쑥쑥 길어지는 것은?', ['고드름', '눈사람', '장갑', '난로'], '처마 끝에 거꾸로 매달린 얼음!', '고○○'),
+    Q('know', '물이 얼음이 되는 온도는?', ['0도', '10도', '50도', '100도'], '100도는 물이 끓는 온도야.', '영(0)도가 되면 꽁꽁!'),
+    Q('study', '눈사람 하나에 눈덩이가 2개 필요해.\n눈사람 6개를 만들려면 눈덩이는 몇 개?', ['12개', '8개', '10개', '14개'], '2를 여섯 번 더해 봐.', '2 × 6 = ?')
+  ] },
+  light8: { title: '치하오의 등불 퀴즈', who: 'chihao', bg: 'bg/lantern_garden.png', bgm: 'waltz', got: '등불', qs: [
+    Q('story', '케이라의 어릴 적 친구, 보랏빛 꽃의 마법사는?', ['바이올렛', '요코이스', '에이리', '바비'], '"보라색도 예쁜 빛이야."', '제비꽃 모자를 쓴 친구, 바이○○'),
+    Q('riddle', '사람이 마실 수 없는 차는?', ['자동차', '녹차', '유자차', '보리차'], '타고 다니는 차!', '부릉부릉 자○차'),
+    Q('know', '빛이 거울에 부딪혀 튕겨 나가는 것을 뭐라고 할까?', ['반사', '반짝', '반대', '반찬'], '빛을 되돌려 보낸다는 뜻이야.', '반○판, 반○경!'),
+    Q('study', '등불 10개 중 절반이 꺼졌어.\n켜져 있는 등불은 몇 개?', ['5개', '2개', '4개', '10개'], '절반은 똑같이 반으로 나눈 거야.', '10 ÷ 2 = ?')
+  ] },
+  rhythm9: { title: '마리아의 노래 퀴즈', who: 'maria', bg: 'bg/concert_stage.png', bgm: 'cute', got: '노래', qs: [
+    Q('story', '무지개 리본을 숨긴 꼬마 그림자의 이름은?', ['쿠로', '토토', '피피', '로이'], '"흥, 나만 빼고…"', '쿠○'),
+    Q('riddle', '나누면 나눌수록 더 커지는 것은?', ['우정', '케이크', '도토리', '사탕'], '친구 사이에 생기는 것!', '친구와 나누는 따뜻한 마음, 우○'),
+    Q('know', '마리아의 하프는 어떻게 소리를 낼까?', ['줄을 손가락으로 튕겨서', '입으로 불어서', '북채로 두드려서', '흔들어서'], '하프에는 줄이 아주 많아!', '기타처럼 손가락으로…'),
+    Q('study', '맞춤법이 바른 것은?', ['축제를 열었어요', '축재를 열었어요', '축제를 여렀어요', '축재를 여렀어요'], '축제의 "제"는 ㅈ + ㅔ!', '열다 → 열었어요')
+  ] }
+};
+var QUIZ_PRAISE = ['정답이야! 대단해!', '딩동댕! 역시 오로라!', '맞았어! 최고야!', '정답! 반짝반짝 빛나!'];
+function QuizScene(kind, startQ) {
+  var set = QUIZ_SETS[kind], host = CAST[set.who];
+  var qi = Math.min(startQ || 0, set.qs.length - 1);
+  save.scene = kind; save.step = 0; writeSave(); playBgm(set.bgm);
+  IMG(set.bg); IMG(host.faces.smile); IMG('chars/luna_smile.png'); IMG('chars/luna_happy.png');
+  var item, btns, hintLv, state, st, say, happy, shardGiven, pickedRight;
+  var COLORS = ['#ff8fc4', '#8fb8ff', '#f0a85a', '#b59cff'];
+  var hintBtn = Button('💡 힌트', SX + 1130, 840, 270, 110, function () { stepHint(''); }, '#ffb36b');
+  function setup() {
+    item = set.qs[qi]; hintLv = 0; state = 'ask'; st = 0; happy = false; pickedRight = null;
+    say = qi === 0 ? '잘 모르겠으면 \'힌트\'를 눌러! 틀려도 괜찮아, 내가 도와줄게.' : '다음 문제야! 천천히 읽어 봐.';
+    btns = shuffle([0, 1, 2, 3]).map(function (ai, k) {
+      var b = Button(item.a[ai], SX + 110 + (k % 2) * 620, 480 + Math.floor(k / 2) * 150, 600, 126, null, COLORS[k]);
+      b.ai = ai; b.onTap = function () { pick(b); };
+      return b;
+    });
+    hintBtn.disabled = false;
+    save.qstep = qi; writeSave();
+  }
+  function wrongLeft() { return btns.filter(function (b) { return b.ai !== 0 && !b.disabled; }); }
+  // 힌트 한 단계: 힌트1 → 힌트2(+오답 하나 지움) → 그다음부터는 오답 하나씩 지우기
+  function stepHint(prefix) {
+    if (state !== 'ask') return;
+    SFX.hint();
+    function removeOne() { var l = wrongLeft(); if (l.length) { var b = l[Math.floor(Math.random() * l.length)]; b.disabled = true; b.gone = true; } }
+    if (hintLv < 2) { say = prefix + item.h[hintLv]; hintLv++; if (hintLv === 2) removeOne(); } // 두 번째 힌트부터 오답도 하나 지움
+    else { removeOne(); say = prefix + '틀린 답 하나를 지워 줄게! 남은 것 중에 골라 봐.'; }
+    if (!wrongLeft().length) { hintBtn.disabled = true; say = prefix + '이제 정답만 남았어! 톡 눌러 봐.'; }
+  }
+  function pick(b) {
+    if (state !== 'ask') return;
+    if (b.ai === 0) {
+      state = 'right'; st = 0; happy = true; pickedRight = b; b.color = '#4fbf5f';
+      var first = !btns.some(function (x) { return x.wrong; }) && hintLv === 0;
+      save.stars += first ? 2 : 1; writeSave();
+      say = QUIZ_PRAISE[qi % QUIZ_PRAISE.length] + (first ? '  ⭐ +2' : '  ⭐ +1');
+      SFX.found(); burst(b.x + b.w / 2, b.y + b.h / 2, 24);
+    } else {
+      b.disabled = true; b.wrong = true; b.label = '✗ ' + b.label;
+      SFX.miss();
+      stepHint('아깝다! ');
+    }
+  }
+  setup();
+  return {
+    update: function (dt) {
+      st += dt;
+      if (state === 'right' && st > 1.5) {
+        if (qi + 1 < set.qs.length) { qi++; setup(); }
+        else { state = 'done'; st = 0; shardGiven = false; SFX.clear(); save.stars += 3; writeSave(); burst(W / 2, 400, 40); }
+      }
+      if (state === 'done') {
+        if (!shardGiven && st > 1.2) { shardGiven = true; if (QUIZ_SHARD[kind]) getShard(QUIZ_SHARD[kind]); }
+        if (shardGiven && st > 2.6 && !memoryPopup) { state = 'end'; finishGame(kind); }
+      }
+      dirty = true;
+    },
+    draw: function () {
+      drawBg(set.bg);
+      ctx.fillStyle = 'rgba(35,18,55,0.45)'; ctx.fillRect(0, 0, W, H);
+      // 위: 제목 · 몇 번째 문제 · 종류
+      panel(SX + 30, 20, 1380, 116, 'rgba(255,250,244,0.95)', host.color);
+      drawFace(host.faces.smile, SX + 100, 78, 46);
+      text(set.title, SX + 165, 60, 38, '#4a3550', 'left', 900);
+      text('문제 ' + (Math.min(qi, set.qs.length - 1) + 1) + ' / ' + set.qs.length + '      ⭐ ' + save.stars, SX + 165, 106, 28, '#7a6a8a', 'left', 700);
+      for (var i = 0; i < set.qs.length; i++) {
+        ctx.beginPath(); ctx.arc(SX + 860 + i * 44, 78, 14, 0, 7);
+        ctx.fillStyle = i < qi || (i === qi && state !== 'ask') ? '#4fbf5f' : i === qi ? '#ffb36b' : '#e3d6e8'; ctx.fill();
+      }
+      var cat = QUIZ_CAT[item.cat];
+      rr(SX + 1090, 44, 290, 66, 33); ctx.fillStyle = cat[1]; ctx.fill();
+      text(cat[0], SX + 1235, 78, 32, '#fff', 'center', 800);
+      if (state === 'done' || state === 'end') {
+        outlined('퀴즈 완료!', W / 2, 420, 120, '#fff', '#ff6fae', 22);
+        outlined(set.got + ' 문제를 모두 풀었어요!  ⭐ +3', W / 2, 580, 50, '#fff7c2', '#8b5cc4', 12);
+        return;
+      }
+      // 문제
+      panel(SX + 110, 165, 1220, 285, 'rgba(255,252,246,0.98)', cat[1]);
+      var fs = 50, ls = wrap(item.q, 1120, fs);
+      while (ls.length > 3 && fs > 36) { fs -= 4; ls = wrap(item.q, 1120, fs); }
+      var lh = fs * 1.4, y0 = 307 - (ls.length - 1) * lh / 2;
+      ls.forEach(function (l, i) { text(l, W / 2, y0 + i * lh, fs, '#3e2a48', 'center', 800); });
+      // 보기
+      btns.forEach(function (b) {
+        if (b.gone) { ctx.save(); ctx.globalAlpha = 0.3; drawButton(b); ctx.restore(); return; }
+        if (b === pickedRight) { rr(b.x - 10, b.y - 10, b.w + 20, b.h + 20, (b.h + 20) / 2); ctx.fillStyle = 'rgba(255,240,120,' + (0.5 + Math.sin(T * 10) * 0.3) + ')'; ctx.fill(); }
+        drawButton(b);
+      });
+      // 아래: 루나의 말풍선 + 힌트 버튼
+      drawFace(happy ? 'chars/luna_happy.png' : 'chars/luna_smile.png', SX + 150, 905, 100);
+      panel(SX + 275, 800, 830, 210, 'rgba(255,250,244,0.97)', '#e8a917');
+      rr(SX + 300, 778, 130, 50, 25); ctx.fillStyle = '#e8a917'; ctx.fill();
+      text('루나', SX + 365, 804, 30, '#fff', 'center', 900);
+      var sl = wrap(say, 770, 36);
+      sl.forEach(function (l, i) { text(l, SX + 310, 905 - (sl.length - 1) * 25 + i * 50, 36, '#4a3550', 'left', 700); });
+      drawButton(hintBtn);
+    },
+    tap: function (x, y) { if (state !== 'ask') return; if (!tapButtons(btns, x, y)) tapButtons([hintBtn], x, y); },
+    key: function (k) { var n = '1234'.indexOf(k); if (n >= 0 && btns[n] && !btns[n].disabled) { SFX.tap(); pick(btns[n]); } if (k === 'h') stepHint(''); },
+    dbg: function () { return { quiz: true, qi: qi, state: state, hintLv: hintLv, say: say, btns: btns, hintBtn: hintBtn }; }
+  };
+}
+
 var last = 0, lastScene = null;
 function frame(now) {
   var dt = Math.min(0.05, (now - last) / 1000 || 0); last = now; T += dt;
